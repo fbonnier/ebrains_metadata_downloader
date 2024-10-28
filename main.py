@@ -367,8 +367,6 @@ if __name__ == "__main__":
     token = None
     username = None
     password = None
-    username = None
-    password = None
     test = None
 
     try:
@@ -394,14 +392,15 @@ if __name__ == "__main__":
 
     id = str(parsed.id[0])
     run_file = str(parsed.run[0])
-    prerun_file = str(parsed.prerun[0])
+    prerun_file = str(parsed.prerun[0]) if parsed.prerun else None
 
     run = None
     with open(run_file) as f:
         run = json.load(f)["run"]
     prerun = None
-    with open(prerun_file) as f:
-        prerun = json.load(f)["pre-run"]
+    if prerun_file:
+        with open(prerun_file) as f:
+            prerun = json.load(f)["pre-run"]
     
     if id:
         if token:

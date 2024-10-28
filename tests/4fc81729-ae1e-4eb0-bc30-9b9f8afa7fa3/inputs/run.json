@@ -1,0 +1,3 @@
+{
+  "run": "cd code/master/PotjansDiesmann2014-master/PyNEST; python3 run_microcircuit.py"
+}

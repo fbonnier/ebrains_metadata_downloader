@@ -1,0 +1,3 @@
+{
+  "run": "python3 $WORKDIR/code/263259/HH_project/network_simulations/ntwk_sim_demo.py --CONFIG 'HH_RS--HH_FS--CONFIG1' --tstop 5000 -f $WORKDIR/code/263259/HH_project/network_simulations/data/example.npy"
+}

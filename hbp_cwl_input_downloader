@@ -1,0 +1,96 @@
+#!/bin/bash
+
+set -e
+
+TOKEN=""
+HBP_ID=""
+RUN_INSTR=""
+PRE_INSTR=""
+USERNAME=""
+PASSWORD=""
+TEST=""
+
+NARGS=$(($#-1))
+
+for (( iarg=1; iarg<=NARGS; iarg++)); do
+    jarg=$((iarg+1))
+
+    if [ "${!iarg}" == "--token" ]
+        then
+            TOKEN="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--username" ]
+        then
+            USERNAME="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--password" ]
+        then
+            PASSWORD="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--run" ]
+        then
+            RUN_INSTR="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--pre-run" ]
+        then
+            PRE_INSTR="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--id" ]
+        then
+            HBP_ID="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--test" ]
+        then
+            TEST="${!jarg}"
+    fi
+done
+
+TORUN="python3 $( dirname -- "$0"; )/main.py"
+
+if [ "${HBP_ID}" == "" ]; then
+    echo "Missing parameter:"
+    echo "--id: identifier string for of the model in EBRAINS database"
+    exit 1
+fi
+
+TORUN="${TORUN} --id=${HBP_ID}"
+
+if [ "${TOKEN}" == "" ]; then
+    echo "--token: Missing access token, trying username/password authentification"
+
+    if [ "${USERNAME}" == "" ] || [ "${PASSWORD}" == "" ]; then
+        echo "Missing credentials"
+        echo "--username: login authentification username string for HBP account"
+        echo "--password: login authentification password string for HBP account"
+        echo "Exiting"
+        exit 1
+    else
+        # USERNAME="--username \"${USERNAME}\""
+        # PASSWORD="--password \"${PASSWORD}\""
+        TORUN="${TORUN} --username=${USERNAME} --password=${PASSWORD}"
+    fi
+else
+    # TOKEN="--token ${TOKEN}"
+    TORUN="${TORUN} --token=${TOKEN}"
+fi
+
+if [ "${TEST}" != "" ]; then
+    TORUN="${TORUN} --test=${TEST}"
+fi
+
+if [ "${RUN_INSTR}" == "" ]; then
+    echo "--run: running instruction string to run the model"
+    echo "Exiting"
+    exit 1
+fi
+echo "{\"run\":\"${RUN_INSTR}\"}" > run.json
+TORUN="${TORUN} --run=run.json"
+
+if [ "${PRE_INSTR}" != "" ]; then
+    # PRE_INSTR="--pre-run \"${PRE_INSTR}\""
+    echo "{\"pre-run\":\"${PRE_INSTR}\"}" > pre-run.json
+    TORUN="${TORUN} --pre-run=pre-run.json"
+fi
+
+$TORUN
+# python3 $( dirname -- "$0"; )/main.py "${USERNAME}" "${PASSWORD}" "${TOKEN}" --id "${HBP_ID}" --run "${RUN_INSTR}" "${PRE_INSTR}"

@@ -30,13 +30,13 @@ def get_zenodo_download_link_from_page (zenodo_page_url: str):
         
         # Get all file packages download links
         for iitem in data_json:
-            links.append(data_json[iitem]["links"]["self"])
-
+            links.append(data_json[iitem]["links"])
+            # print(data_json[iitem]["links"])
 
         # Select archive links
         for iitem in links:
-            if zipfile.is_zipfile(iitem) or tarfile.is_tarfile(iitem):
-                to_return.append(iitem)
+            if iitem["self"].endswith("zip") or iitem["self"].endswith("tar"):
+                to_return.append(iitem["content"])
 
     except Exception as e:
         print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))

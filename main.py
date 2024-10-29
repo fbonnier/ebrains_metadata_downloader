@@ -166,11 +166,12 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
         # Zenodo repo ?
         elif zenodo.is_zenodo_page (icode):
-            code["url"] = zenodo.get_zenodo_download_link_from_page(icode)
+            code["url"] = zenodo.get_zenodo_download_link_from_page(icode)[0]
 
         else:
             code["url"] = icode
-            
+        
+        print (code["url"])
         response = urllib.request.urlopen(code["url"])
         if "Content-Disposition" in response.headers.keys():
             dhead = response.headers['Content-Disposition']
@@ -186,10 +187,10 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     print("Current WORKDIR: " + json_content["Metadata"]["workdir"])
     # 3. Pre-instructions
     json_content["Metadata"]["run"]["pre-instruction"] = prerun if prerun else report_default_values["run"]["pre-instruction"]
-    json_content["Metadata"]["run"]["pre-instruction"] = json_content["Metadata"]["run"]["pre-instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
+    # json_content["Metadata"]["run"]["pre-instruction"] = json_content["Metadata"]["run"]["pre-instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
     # 4. instruction
     json_content["Metadata"]["run"]["instruction"] = runscript if runscript else report_default_values["run"]["instruction"]
-    json_content["Metadata"]["run"]["instruction"] = json_content["Metadata"]["run"]["instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
+    # json_content["Metadata"]["run"]["instruction"] = json_content["Metadata"]["run"]["instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
     # 5. Inputs
     json_content["Metadata"]["run"]["inputs"] = inputs if inputs else report_default_values["run"]["inputs"]
     # 6. Expected outputs

@@ -1,6 +1,6 @@
 import re
 import traceback
-
+import urllib.request
 
 #------------------------------
 ### ModelDB models
@@ -21,7 +21,17 @@ def get_modeldb_download_link_from_page (modeldb_page_url: str)-> int:
     except Exception as e:
         print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
         
-    return get_modeldb_download_link_from_id (int(modeldb_id))
+    code = {"url": None, "filepath": None, "path": None}
+    
+    code["url"] = get_modeldb_download_link_from_id (int(modeldb_id))
+    response = urllib.request.urlopen(code["url"])
+    if "Content-Disposition" in response.headers.keys():
+        dhead = response.headers['Content-Disposition']
+        code["filepath"] =  re.findall("filename=(.+)", dhead)[0]
+    else:
+        code["filepath"] = code["url"].split("/")[-1]
+
+    return code
 
 def get_modeldb_download_link_from_id (modeldb_id: int):
     

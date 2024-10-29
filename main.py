@@ -150,7 +150,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         code = {"url": None, "filepath": None, "path": None}
         # ModelDB ?
         if modeldb.is_modeldb_page (icode):
-            code["url"] = modeldb.get_modeldb_download_link_from_page(icode)
+            code = modeldb.get_modeldb_download_link_from_page(icode)
             
         
         # GitHub repo ?
@@ -166,18 +166,18 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
         # Zenodo repo ?
         elif zenodo.is_zenodo_page (icode):
-            code["url"] = zenodo.get_zenodo_download_link_from_page(icode)[0]
+            code = zenodo.get_zenodo_code_metadata_from_page(icode)
 
         else:
             code["url"] = icode
         
-        print (code["url"])
-        response = urllib.request.urlopen(code["url"])
-        if "Content-Disposition" in response.headers.keys():
-            dhead = response.headers['Content-Disposition']
-            code["filepath"] = json_content["Metadata"]["workdir"] + re.findall("filename=(.+)", dhead)[0]
-        else:
-            code["filepath"] = json_content["Metadata"]["workdir"] + code["url"].split("/")[-1]
+        # response = urllib.request.urlopen(code["url"])
+        # if "Content-Disposition" in response.headers.keys():
+        #     dhead = response.headers['Content-Disposition']
+        #     print (dhead)
+        #     code["filepath"] = json_content["Metadata"]["workdir"] + re.findall("filename=(.+)", dhead)[0]
+        # else:
+        #     code["filepath"] = json_content["Metadata"]["workdir"] + code["url"].split("/")[-1]
         
         folder = code["filepath"].split("/")[-1]
         code["path"] = json_content["Metadata"]["workdir"] + "/code/" + folder.split(".")[0] + "/"

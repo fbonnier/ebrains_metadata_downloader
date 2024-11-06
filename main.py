@@ -170,29 +170,22 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
         else:
             code["url"] = icode
-        
-        # response = urllib.request.urlopen(code["url"])
-        # if "Content-Disposition" in response.headers.keys():
-        #     dhead = response.headers['Content-Disposition']
-        #     print (dhead)
-        #     code["filepath"] = json_content["Metadata"]["workdir"] + re.findall("filename=(.+)", dhead)[0]
-        # else:
-        #     code["filepath"] = json_content["Metadata"]["workdir"] + code["url"].split("/")[-1]
-        
+                
         folder = code["filepath"].split("/")[-1]
         code["path"] = json_content["Metadata"]["workdir"] + "/code/" + folder.split(".")[0] + "/"
 
         json_content["Metadata"]["run"]["code"].append(code)
 
-    print("Current WORKDIR: " + json_content["Metadata"]["workdir"])
+
     # 3. Pre-instructions
     json_content["Metadata"]["run"]["pre-instruction"] = prerun if prerun else report_default_values["run"]["pre-instruction"]
-    # json_content["Metadata"]["run"]["pre-instruction"] = json_content["Metadata"]["run"]["pre-instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
+
     # 4. instruction
     json_content["Metadata"]["run"]["instruction"] = runscript if runscript else report_default_values["run"]["instruction"]
-    # json_content["Metadata"]["run"]["instruction"] = json_content["Metadata"]["run"]["instruction"].replace("$WORKDIR", json_content["Metadata"]["workdir"])
+
     # 5. Inputs
     json_content["Metadata"]["run"]["inputs"] = inputs if inputs else report_default_values["run"]["inputs"]
+
     # 6. Expected outputs
     json_content["Metadata"]["run"]["outputs"] = outputs if outputs else report_default_values["run"]["outputs"]
     # 6.1 Calculates hash of outputs
@@ -306,9 +299,16 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         # Decision: What to do with no output expected ?
         # ! Exception raised
         instance_outputs = model_version.output_data
+        # Check if outputs are EBRAINS datasets
+        try: 
+            dataset = DatasetVersion.from_id(instance_outputs, client)
+            instance_outputs = dataset.repository.resolve(client).iri.value
+        except Exception as e:
+            warnings.warn("Output data are not DatasetVersion ... Continue")
+
         if not instance_outputs:
             warnings.warn("No output data to compare for this Instance ... Continue")
-
+        
         # Get Pre-Run instructions, to prepare simulation run
         instance_prerun = prerun
         
@@ -319,7 +319,6 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         if not run:
             raise Exception ("No run instruction specified for this Instance")
         instance_run = run
-
 
     except Exception as e:
         print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))

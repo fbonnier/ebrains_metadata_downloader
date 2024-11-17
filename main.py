@@ -158,11 +158,11 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
             # GitHub release ?
             if github.is_github_release_page(icode):
-                code["url"] = github.get_github_download_link_from_release_page(icode)
+                code = github.get_github_download_link_from_release_page(icode)
 
             # GitHub home page
             else:
-                code["url"] = github.get_github_download_link_from_homepage(icode)
+                code = github.get_github_download_link_from_homepage(icode)
 
         # Zenodo repo ?
         elif zenodo.is_zenodo_page (icode):

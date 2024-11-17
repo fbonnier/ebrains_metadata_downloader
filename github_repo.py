@@ -18,7 +18,7 @@ def is_github_release_page (url_link: str) -> bool:
         return True
     return False
 
-def get_github_download_link_from_homepage (github_homepage_url: str) -> str:
+def get_github_download_link_from_homepage (github_homepage_url: str) -> dict:
 
     code = {"url": None, "filepath": None, "path": None}
     # Get zip from master branch, also works for main
@@ -40,7 +40,7 @@ def get_github_download_link_from_homepage (github_homepage_url: str) -> str:
     return code
 
 
-def get_github_download_link_from_release_page (github_release_url: str) -> str:
+def get_github_download_link_from_release_page (github_release_url: str) -> dict:
     
     zip_url = None
     code = {"url": None, "filepath": None, "path": None}

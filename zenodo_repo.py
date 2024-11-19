@@ -4,6 +4,7 @@ import traceback
 from bs4 import BeautifulSoup
 import zipfile
 import tarfile
+import re
 
 #------------------------------
 ### Zenodo models
@@ -22,9 +23,18 @@ def get_zenodo_code_metadata_from_page (zenodo_page_url: str):
 
     code_list = []
     links = []
-    
+    zenodo_record_page = None
+
     try:
-        response = urllib.request.urlopen(zenodo_page_url)
+        # Get record page in cases the URL has been wrongly saved. The record page is like
+        # https://zenodo.org/records/$model_id
+
+        if match := re.search("https://zenodo.org/records/[0-9]+", zenodo_page_url, re.IGNORECASE):
+            zenodo_record_page = match.group(0)
+        elif match := re.search("https://zenodo.org/record/[0-9]+", zenodo_page_url, re.IGNORECASE):
+            zenodo_record_page = match.group(0)
+
+        response = urllib.request.urlopen(zenodo_record_page)
         data = response.read() # a `bytes` object
         soup = BeautifulSoup(data, 'html.parser')
         data_json = json.loads(soup.find(id="recordVersions")["data-record"])["files"]["entries"]

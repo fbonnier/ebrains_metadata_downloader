@@ -9,6 +9,7 @@ PRE_INSTR=""
 USERNAME=""
 PASSWORD=""
 TEST=""
+OUTPUTS=""
 
 NARGS=$(($#-1))
 
@@ -42,6 +43,10 @@ for (( iarg=1; iarg<=NARGS; iarg++)); do
     if [ "${!iarg}" == "--test" ]
         then
             TEST="${!jarg}"
+    fi
+    if [ "${!iarg}" == "--outputs" ]
+        then
+            OUTPUTS="${!jarg}"
     fi
 done
 
@@ -90,6 +95,10 @@ if [ "${PRE_INSTR}" != "" ]; then
     # PRE_INSTR="--pre-run \"${PRE_INSTR}\""
     echo "{\"pre-run\":\"${PRE_INSTR}\"}" > pre-run.json
     TORUN="${TORUN} --pre-run=pre-run.json"
+fi
+
+if [ "${OUTPUTS}" != "" ]; then
+    TORUN="${TORUN} --outputs=${OUTPUTS}"
 fi
 
 $TORUN

@@ -84,7 +84,7 @@ def compare_reports (test_report=None, reference_report=None):
                 exit(1)
 
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         exit (1)
     
 
@@ -254,7 +254,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         # if model_version.homepage:
             # instance_repo.append (model_version.homepage.resolve(client).url.value)
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         exit (1)
 
     try:
@@ -264,7 +264,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
             instance_homepage = model_version.homepage.value
         # print ("Homepage: " + str(instance_homepage))
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         instance_homepage = None
 
     try:
@@ -274,7 +274,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
             instance_paper = model_version.related_publications.resolve(client).identifier
         # print ("Paper: " + str(instance_paper))
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         instance_paper = None
 
     try:
@@ -284,7 +284,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
             instance_documentation = model_version.full_documentation.value
         print ("Full-documentation: " + str(instance_documentation))
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         instance_documentation = None
 
     try:
@@ -325,7 +325,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         instance_run = run
 
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         exit (1)
 
     try:
@@ -338,7 +338,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
             print ("Metadata report File created successfully")
 
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         exit (1)
 
 

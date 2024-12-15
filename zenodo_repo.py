@@ -49,7 +49,7 @@ def get_zenodo_code_metadata_from_page (zenodo_page_url: str):
                 code_list.append({"url": iitem["content"], "filepath": iitem["self"].split("/")[-1], "path": None})
         to_return = code_list[0]
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         to_return = None
 
     return to_return

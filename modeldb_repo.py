@@ -19,7 +19,7 @@ def get_modeldb_download_link_from_page (modeldb_page_url: str)-> int:
     try:
         modeldb_id = re.findall("\d+", modeldb_page_url)[0]
     except Exception as e:
-        print (str("".join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))))
+        print (str("".join(traceback.format_exception(e))))
         
     code = {"url": None, "filepath": None, "path": None}
     

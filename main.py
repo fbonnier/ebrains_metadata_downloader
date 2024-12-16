@@ -15,7 +15,6 @@ from fairgraph import KGClient
 import fairgraph.openminds.core as omcore
 from fairgraph.openminds.core import ModelVersion
 
-from fairgraph.openminds.core import DatasetVersion
 from fairgraph.openminds.controlledterms import Technique
 
 from hbp_validation_framework import ModelCatalog
@@ -26,10 +25,14 @@ import modeldb_repo as modeldb
 import github_repo as github
 import zenodo_repo as zenodo
 
+import input_output as inputoutput
+
 # Source server from which the ALREADY KG-v3 instances are downloaded
 # Default is Official KG-v3 server
 SOURCE_SERVER = "https://core.kg.ebrains.eu"
 # SOURCE_SERVER = "https://kg.ebrains.eu/api/instances/"
+
+file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
@@ -99,9 +102,9 @@ def run_test (token=None, username=None, password=None,id=None, run=None, prerun
 ### Parameters ###
 #*****************
 # id: str
-# repos: array of str
-# inputs: array of dict {url: x, destination: y}
-# outputs: array of str
+# repos: array of url str
+# inputs: array of url str
+# outputs: array of url str
 # runscript: array of str
 def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, prerun, runscript, environment, homepage, paper, documentation):
     json_content = { "Metadata": report_default_values}
@@ -184,16 +187,33 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     json_content["Metadata"]["run"]["instruction"] = runscript if runscript else report_default_values["run"]["instruction"]
 
     # 5. Inputs
-    json_content["Metadata"]["run"]["inputs"] = inputs if inputs else report_default_values["run"]["inputs"]
+    for iinput in inputs:
+        input_from_url = inputoutput.get_from_url (iinput)
 
+        if input_from_url:
+            json_content["Metadata"]["run"]["inputs"].append(input_from_url)
+
+    # 5.1 Calculates hash of inputs
+    for iinput in json_content["Metadata"]["run"]["inputs"]:
+        # Calculates hash
+        iinput["hash"] = str(hashlib.md5(iinput["url"].encode()).hexdigest())
+        # Calculates input path
+        iinput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/inputs/" +
+        str(iinput["hash"]))
+        
     # 6. Expected outputs
-    json_content["Metadata"]["run"]["outputs"] = outputs if outputs else report_default_values["run"]["outputs"]
+    for ioutput in outputs:
+        output_from_cli = inputoutput.get_from_url (ioutput)
+
+        if output_from_cli:
+            json_content["Metadata"]["run"]["outputs"].append(output_from_cli)
+        
     # 6.1 Calculates hash of outputs
     for ioutput in json_content["Metadata"]["run"]["outputs"]:
         # Calculates hash
         ioutput["hash"] = str(hashlib.md5(ioutput["url"].encode()).hexdigest())
         # Calculates output path
-        ioutput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/ouputs/" +
+        ioutput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/outputs/" +
         str(ioutput["hash"]))
         
     # 7. Environment configuration
@@ -244,8 +264,8 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         print (e)
         exit (1)
     
+    # Get model's code location
     try:
-        # Get repo location
         instance_repo = []
         if not model_version.repository:
             raise Exception ("Instance repository does not exists")
@@ -287,43 +307,65 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         print (str("".join(traceback.format_exception(e))))
         instance_documentation = None
 
+    # Get inputs
+    #       !! No exception raised if no inputs
+    #       !! Warning message is shown instead
     try:
-        # Get inputs
-        #       !! No exception raised if no inputs
-        #       !! Warning message is shown instead
-        instance_inputs = model_version.input_data
+        instance_inputs = []
+        for iinput in model_version.input_data:
+            input_from_ebrains_dataset = inputoutput.get_url_from_ebrains_dataset (iinput, client)
+            
+            if not input_from_ebrains_dataset:
+                instance_inputs.append(iinput)
+            else:
+                instance_inputs.append(input_from_ebrains_dataset)
+
         if not instance_inputs:
             warnings.warn("No input data for this Instance ... Continue")
+    except Exception as e:
+        print (str("".join(traceback.format_exception(e))))
 
-        # Get Outputs
-        # Decision: What to do with no output expected ?
-        # ! Exception raised
-        if outputs:
-            instance_outputs = outputs
-        else:
-            instance_outputs = model_version.output_data
+    # Get Outputs
+    # TODO Decision: What to do with no output expected ?
+    # ! Exception raised
+    try:
+        instance_outputs = []
+        
+        for ioutput in outputs:
+            output_from_ebrains_dataset = inputoutput.get_url_from_ebrains_dataset (ioutput, client)
+
+            if not output_from_ebrains_dataset:
+                instance_outputs.append(ioutput)
+            else:
+                instance_outputs.append(output_from_ebrains_dataset)
+        
+        # if outputs:
+        #     instance_outputs = outputs
+        # else:
+        #     instance_outputs = model_version.output_data
         # Check if outputs are EBRAINS datasets
         # TODO check if outputs are file objet/file bundle objects/ Web object
-        try: 
-            dataset = DatasetVersion.from_id(instance_outputs, client)
-            instance_outputs = dataset.repository.resolve(client).iri.value
-        except Exception as e:
-            warnings.warn("Output data are not DatasetVersion ... Continue")
 
         if not instance_outputs:
             warnings.warn("No output data to compare for this Instance ... Continue")
         
-        # Get Pre-Run instructions, to prepare simulation run
-        instance_prerun = prerun
-        
-        # Get Run instructions,
-        # by default the run instruction is set according to parameter $run
-        # TODO:
-        # - Add run instruction Download
+    except Exception as e:
+        print (str("".join(traceback.format_exception(e))))
+        exit (1)
+
+
+    # Get Pre-Run instructions, to prepare simulation run
+    instance_prerun = prerun
+
+
+    # Get Run instructions,
+    # by default the run instruction is set according to parameter $run
+    # TODO:
+    # - Add run instruction Download
+    try:
         if not run:
             raise Exception ("No run instruction specified for this Instance")
         instance_run = run
-
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))
         exit (1)
@@ -419,12 +461,12 @@ if __name__ == "__main__":
             if test:
                 run_test (token=token, id=id, run=run, prerun=prerun,test=test)
             else:
-                get_cwl_json_kg3(token=token, id=id, run=run, prerun=prerun, outputs=outputs)
+                get_cwl_json_kg3(token=token, id=id, run=run, prerun=prerun, outputs=[outputs])
         elif username and password:
             if test:
                 run_test (username=username, password=password, id=id, run=run, prerun=prerun,test=test)
             else: 
-                get_cwl_json_kg3(username=username, password=password, id=id, run=run, prerun=prerun, outputs=outputs)
+                get_cwl_json_kg3(username=username, password=password, id=id, run=run, prerun=prerun, outputs=[outputs])
         else:
             print ("Error: Authentification failed")
             exit (1)

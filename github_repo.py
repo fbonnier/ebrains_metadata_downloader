@@ -1,3 +1,4 @@
+import os
 import requests
 import urllib.request
 import re
@@ -35,7 +36,7 @@ def get_github_download_link_from_homepage (github_homepage_url: str) -> dict:
         dhead = response.headers['Content-Disposition']
         code["filepath"] = re.findall("filename=(.+)", dhead)[0]
     else:
-        code["filepath"] = code["url"].split("/")[-1]
+        code["filepath"] = os.path.basename(code["url"])
 
     return code
 
@@ -50,7 +51,7 @@ def get_github_download_link_from_release_page (github_release_url: str) -> dict
         
         # Get zip URL from release page
         code["url"] = github_release_url.replace("/releases/tag/", "/archive/refs/tags/") + ".zip"
-        code["filepath"] = code["url"].split("/")[-1]
+        code["filepath"] = os.path.basename(code["url"])
         
         # Test zip url
         # return zip direct link on success

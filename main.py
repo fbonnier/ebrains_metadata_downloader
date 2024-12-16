@@ -17,7 +17,7 @@ from fairgraph.openminds.core import ModelVersion
 
 from fairgraph.openminds.controlledterms import Technique
 
-from hbp_validation_framework import ModelCatalog
+from ebrains_validation_framework import ModelCatalog
 
 from deepdiff import DeepDiff
 

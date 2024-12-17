@@ -30,8 +30,9 @@ import input_output as inputoutput
 
 # Source server from which the ALREADY KG-v3 instances are downloaded
 # Default is Official KG-v3 server
-SOURCE_SERVER = "https://core.kg.ebrains.eu"
+SOURCE_SERVER = "core.kg.ebrains.eu"
 # SOURCE_SERVER = "https://kg.ebrains.eu/api/instances/"
+# SOURCE_SERVER = "core.kg-ppd.ebrains.eu"
 
 file_default_value = {"url": None, "path": None, "filepath": None}
 
@@ -245,14 +246,14 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
     MCclient = None
     # Fairgraph
     if token:
-        client = KGClient(token=token, host="core.kg-ppd.ebrains.eu")
+        client = KGClient(token=token, host=SOURCE_SERVER)
         MCclient = ModelCatalog(token=token)
         # print (MCclient.get_model_instance(instance_id=id))
     elif username and password:
         MCclient = ModelCatalog(username=username, password=password)
         # print (MCclient.get_model_instance(instance_id=id))
         token = MCclient.token
-        client = KGClient(token=token, host="core.kg-ppd.ebrains.eu")
+        client = KGClient(token=token, host=SOURCE_SERVER)
     if not client:
         raise Exception ("Client is " + str(type(client)))
     try:

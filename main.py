@@ -34,7 +34,7 @@ SOURCE_SERVER = "core.kg.ebrains.eu"
 # SOURCE_SERVER = "https://kg.ebrains.eu/api/instances/"
 # SOURCE_SERVER = "core.kg-ppd.ebrains.eu"
 
-file_default_value = {"url": None, "path": None, "filename": None}
+file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
@@ -48,7 +48,7 @@ report_default_values = {
             "path": None}, # Absolute path of the workflow data file to download
         },
     "run": {
-        "code": [], # URL, filename and Path of the code to download and execute, IRI, Label and Homepage
+        "code": [], # URL, Filepath and Path of the code to download and execute, IRI, Label and Homepage
         "pre-instruction": [], # array of known instructions: untar, compile, move inputs, ...
         "instruction": None, # str
         "inputs": [], # Should contain "url" and "path" of input files to download
@@ -152,7 +152,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     # Get run instructions
     # 1. Code URL
     for icode in repos:
-        code = {"url": None, "filename": None, "path": None}
+        code = {"url": None, "filepath": None, "path": None}
         # ModelDB ?
         if modeldb.is_modeldb_page (icode):
             code = modeldb.get_modeldb_download_link_from_page(icode)
@@ -175,9 +175,12 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
         else:
             code["url"] = icode
-            code["filename"] = icode.split("/")[-1]
-                
-        code["path"] = json_content["Metadata"]["workdir"] + "/code/" + code["filename"].split(".")[0] + "/"
+            code["filepath"] = os.path.basename(icode)
+            code["path"] = os.path.basename(icode).split(".")[0]
+        
+
+        code["filepath"] = json_content["Metadata"]["workdir"] + "/code/" + code["filepath"]
+        code["path"] = json_content["Metadata"]["workdir"] + "/code/" + code["path"]
 
         json_content["Metadata"]["run"]["code"].append(code)
 
@@ -201,7 +204,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         iinput["hash"] = str(hashlib.md5(iinput["url"].encode()).hexdigest())
         # Calculates input path
         iinput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/inputs/" +
-        str(iinput["filename"]))
+        str(iinput["hash"]))
         
     # 6. Expected outputs
     for ioutput in outputs:
@@ -216,7 +219,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         ioutput["hash"] = str(hashlib.md5(ioutput["url"].encode()).hexdigest())
         # Calculates output path
         ioutput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/outputs/" +
-        str(ioutput["filename"]))
+        str(ioutput["hash"]))
         
     # 7. Environment configuration
     # 7.1 PIP installs

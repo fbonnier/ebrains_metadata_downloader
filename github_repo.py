@@ -21,7 +21,7 @@ def is_github_release_page (url_link: str) -> bool:
 
 def get_github_download_link_from_homepage (github_homepage_url: str) -> dict:
 
-    code = {"url": None, "filename": None, "path": None}
+    code = {"url": None, "filepath": None, "path": None}
     # Get zip from master branch, also works for main
     code["url"] = github_homepage_url + "/archive/refs/heads/master.zip"
     # Test zip url
@@ -34,31 +34,34 @@ def get_github_download_link_from_homepage (github_homepage_url: str) -> dict:
     response = urllib.request.urlopen(code["url"])
     if "Content-Disposition" in response.headers.keys():
         dhead = response.headers['Content-Disposition']
-        code["filename"] = re.findall("filename=(.+)", dhead)[0]
+        code["filepath"] = re.findall("filepath=(.+)", dhead)[0]
     else:
-        code["filename"] = os.path.basename(code["url"])
-
+        code["filepath"] = os.path.basename(code["url"])
+    
+    code["path"] = code["filepath"].split(".")[0]
+    
     return code
 
 
 def get_github_download_link_from_release_page (github_release_url: str) -> dict:
     
     zip_url = None
-    code = {"url": None, "filename": None, "path": None}
+    code = {"url": None, "filepath": None, "path": None}
 
     # Check if url is link to release page
     if is_github_release_page(github_release_url):
         
         # Get zip URL from release page
         code["url"] = github_release_url.replace("/releases/tag/", "/archive/refs/tags/") + ".zip"
-        code["filename"] = os.path.basename(code["url"])
+        code["filepath"] = os.path.basename(code["url"])
+        code["path"] = code["filepath"].split(".")[0]
         
         # Test zip url
         # return zip direct link on success
         # return None on failure
         response = requests.get(code["url"], stream=True)
         if not response.ok:
-            code["url"] = None
+            code = None
 
     return code
 

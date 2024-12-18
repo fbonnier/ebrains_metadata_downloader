@@ -47,7 +47,7 @@ def get_zenodo_code_metadata_from_page (zenodo_page_url: str):
         # Select archive links
         for iitem in links:
             if iitem["self"].endswith("zip") or iitem["self"].endswith("tar") or iitem["self"].endswith("rar"):
-                code_list.append({"url": iitem["content"], "filename": os.path.basename(iitem["self"]), "path": None})
+                code_list.append({"url": iitem["content"], "filepath": os.path.basename(iitem["self"]), "path": os.path.basename(iitem["self"]).split(".")[0]})
         to_return = code_list[0]
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))

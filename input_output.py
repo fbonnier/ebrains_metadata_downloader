@@ -10,7 +10,7 @@ from fairgraph.openminds.core import DatasetVersion
 ### Input/Ouput handling
 #------------------------------
 
-file_default_value = {"url": None, "path": None, "filename": None, "hash": None}
+file_default_value = {"url": None, "path": None, "filepath": None, "hash": None}
 
 # Get data from EBRAINS Dataset version
 def get_url_from_ebrains_dataset (dataset_id, client):
@@ -34,7 +34,7 @@ def get_from_url (dataset_url):
         else:
             to_return = None
         url_parsed = urlparse(to_return["url"])
-        to_return["filename"] = os.path.basename(unquote(url_parsed.path))
+        to_return["filepath"] = os.path.basename(unquote(url_parsed.path))
         
     except Exception as e:
         to_return = None

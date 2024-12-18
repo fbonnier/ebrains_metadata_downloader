@@ -22,15 +22,17 @@ def get_modeldb_download_link_from_page (modeldb_page_url: str)-> int:
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))
         
-    code = {"url": None, "filename": None, "path": None}
+    code = {"url": None, "filepath": None, "path": None}
     
     code["url"] = get_modeldb_download_link_from_id (int(modeldb_id))
     response = urllib.request.urlopen(code["url"])
     if "Content-Disposition" in response.headers.keys():
         dhead = response.headers['Content-Disposition']
-        code["filename"] =  re.findall("filename=(.+)", dhead)[0]
+        code["filepath"] =  re.findall("filepath=(.+)", dhead)[0]
     else:
-        code["filename"] = os.path.basename(code["url"])
+        code["filepath"] = os.path.basename(code["url"])
+
+    code["path"] = code["filepath"].split(".")[0]
 
     return code
 

@@ -219,7 +219,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         ioutput["hash"] = str(hashlib.md5(ioutput["url"].encode()).hexdigest())
         # Calculates output path
         ioutput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/outputs/" +
-        str(ioutput["hash"]))
+        str(ioutput["filepath"]).split(".")[0])
         
     # 7. Environment configuration
     # 7.1 PIP installs

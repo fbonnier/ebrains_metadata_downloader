@@ -28,7 +28,7 @@ def get_modeldb_download_link_from_page (modeldb_page_url: str)-> int:
     response = urllib.request.urlopen(code["url"])
     if "Content-Disposition" in response.headers.keys():
         dhead = response.headers['Content-Disposition']
-        code["filepath"] =  re.findall("filepath=(.+)", dhead)[0]
+        code["filepath"] =  re.findall("filename=(.+)", dhead)[0]
     else:
         code["filepath"] = os.path.basename(code["url"])
 

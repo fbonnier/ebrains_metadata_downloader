@@ -27,10 +27,9 @@ def get_url_from_ebrains_dataset (dataset_id, client):
 def get_from_url (dataset_url):
     to_return = file_default_value
     try:
-        url_parsed = urlparse(dataset_url)
-        print (url_parsed)
+        # url_parsed = urlparse(dataset_url)
         # to_return["filepath"] = os.path.basename(unquote(url_parsed.path))
-        to_return["filepath"] = os.path.basename(url_parsed.path)
+        to_return["filepath"] = os.path.basename(dataset_url)
         # Test the url
         response = urllib.request.urlopen(dataset_url)
         if response.status == 200:

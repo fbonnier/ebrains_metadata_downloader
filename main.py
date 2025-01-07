@@ -214,7 +214,10 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
             os.mkdir(json_content["Metadata"]["workdir"] + "/outputs/")
             os.rename(ioutput, output_from_cli["filepath"])
         except Exception as e:
+            print (str("".join(traceback.format_exception(e))))
             print ("Can't create outputs folder, outputs are urls ?")
+            print (ioutput)
+            print (output_from_cli)
 
 
         if output_from_cli:

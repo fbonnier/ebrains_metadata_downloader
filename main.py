@@ -210,6 +210,12 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     for ioutput in outputs:
         output_from_cli = inputoutput.get (ioutput)
         output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"]
+        try:
+            os.mkdir(json_content["Metadata"]["workdir"] + "/outputs/")
+            os.rename(ioutput, output_from_cli["filepath"])
+        except Exception as e:
+            print ("Can't create outputs folder, outputs are urls ?")
+
 
         if output_from_cli:
             json_content["Metadata"]["run"]["outputs"].append(output_from_cli)

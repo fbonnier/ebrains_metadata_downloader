@@ -47,7 +47,6 @@ def get_from_path (dataset_path):
     if os.path.exists(dataset_path):
         to_return["filepath"] = os.path.basename(dataset_path)
         to_return["url"] = None
-        to_return["path"] = os.path.basename(dataset_path)
     else:
         to_return = None
 

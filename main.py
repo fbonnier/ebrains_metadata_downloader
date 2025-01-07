@@ -210,16 +210,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     # 6. Expected outputs
     for ioutput in outputs:
         output_from_cli = inputoutput.get (ioutput)
-        output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"]
-        try:
-            os.mkdir(json_content["Metadata"]["workdir"] + "/outputs/")
-            shutil.move(ioutput, output_from_cli["filepath"])
-        except Exception as e:
-            print (str("".join(traceback.format_exception(e))))
-            print ("Can't create outputs folder, outputs are urls ?")
-            print (ioutput)
-            print (output_from_cli)
-
+        output_from_cli["path"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"]
 
         if output_from_cli:
             json_content["Metadata"]["run"]["outputs"].append(output_from_cli)

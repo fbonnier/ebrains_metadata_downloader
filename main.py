@@ -9,6 +9,7 @@ import re
 import requests
 import urllib.request
 import traceback
+import shutil
 
 # Fairgraph
 from fairgraph import KGClient
@@ -212,7 +213,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"]
         try:
             os.mkdir(json_content["Metadata"]["workdir"] + "/outputs/")
-            os.rename(ioutput, output_from_cli["filepath"])
+            shutil.move(ioutput, output_from_cli["filepath"])
         except Exception as e:
             print (str("".join(traceback.format_exception(e))))
             print ("Can't create outputs folder, outputs are urls ?")

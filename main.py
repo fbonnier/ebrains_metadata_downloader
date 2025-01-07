@@ -201,7 +201,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     # 5.1 Calculates hash of inputs
     for iinput in json_content["Metadata"]["run"]["inputs"]:
         # Calculates hash
-        iinput["hash"] = str(hashlib.md5(iinput["url"].encode()).hexdigest())
+        iinput["hash"] = str(hashlib.md5(iinput["url"].encode()).hexdigest()) if iinput["url"] else str(hashlib.md5(iinput["filepath"].encode()).hexdigest())
         # Calculates input path
         iinput["path"] = str(str(json_content["Metadata"]["workdir"]) + "/inputs/" +
         str(iinput["hash"]))
@@ -217,7 +217,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     # 6.1 Calculates hash of outputs
     for ioutput in json_content["Metadata"]["run"]["outputs"]:
         # Calculates hash
-        ioutput["hash"] = str(hashlib.md5(ioutput["url"].encode()).hexdigest())
+        ioutput["hash"] = str(hashlib.md5(ioutput["url"].encode()).hexdigest()) if ioutput["url"] else str(hashlib.md5(ioutput["filepath"].encode()).hexdigest())
         # Calculates output path
         ioutput["path"] = str(ioutput["filepath"]).split(".")[0]
         

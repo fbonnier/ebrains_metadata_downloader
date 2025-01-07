@@ -193,7 +193,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
     # 5. Inputs
     for iinput in inputs:
-        input_from_url = inputoutput.get_from_url (iinput)
+        input_from_url = inputoutput.get (iinput)
 
         if input_from_url:
             json_content["Metadata"]["run"]["inputs"].append(input_from_url)
@@ -208,7 +208,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         
     # 6. Expected outputs
     for ioutput in outputs:
-        output_from_cli = inputoutput.get_from_url (ioutput)
+        output_from_cli = inputoutput.get (ioutput)
         output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"]
 
         if output_from_cli:

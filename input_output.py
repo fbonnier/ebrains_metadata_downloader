@@ -41,4 +41,28 @@ def get_from_url (dataset_url):
         to_return = None
     return to_return
 
+def get_from_path (dataset_path):
+    to_return = file_default_value
+    
+    if os.path.exists(dataset_path):
+        to_return["filepath"] = os.path.basename(dataset_path)
+        to_return["url"] = None
+        to_return["path"] = os.path.basename(dataset_path)
+    else:
+        to_return = None
+
+    return to_return
+
+def get (dataset):
+    to_return = file_default_value
+
+    # Data is a file
+    to_return = get_from_path (dataset_path=dataset)
+
+    # Data is URL link
+    if to_return is None:
+        to_return = get_from_url(dataset_url=dataset)
+
+    return to_return
+
 #------------------------------

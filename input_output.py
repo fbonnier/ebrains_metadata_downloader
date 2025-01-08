@@ -45,8 +45,10 @@ def get_from_path (dataset_path):
     to_return = file_default_value
     
     if os.path.exists(dataset_path):
-        to_return["filepath"] = os.path.basename(dataset_path)
-        to_return["url"] = None
+        # to_return["filepath"] = os.path.basename(dataset_path)
+        # to_return["url"] = None
+        print ("Dataset exists locally\n")
+        to_return = None
     else:
         to_return = None
 

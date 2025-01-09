@@ -213,7 +213,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
         if output_from_cli:
             output_from_cli["path"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"].split(".")[0]
-            output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + output_from_cli["filepath"]
+            output_from_cli["filepath"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/" + output_from_cli["filepath"] if output_from_cli["url"] else str(json_content["Metadata"]["workdir"]) + output_from_cli["filepath"]
             json_content["Metadata"]["run"]["outputs"].append(output_from_cli)
         
     # 6.1 Calculates hash of outputs

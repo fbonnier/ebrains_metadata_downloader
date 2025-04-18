@@ -131,7 +131,8 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
 
     # Get Workdir
     json_content["Metadata"]["workdir"] = workdir if workdir else report_default_values["workdir"]
-    json_content["Metadata"]["workdir"] = os.path.abspath( json_content["Metadata"]["workdir"] ) + "/"
+    # json_content["Metadata"]["workdir"] = os.path.abspath( json_content["Metadata"]["workdir"] ) + "/"
+    json_content["Metadata"]["workdir"] = os.getenv("WORKDIR", "/usr/src/app") + "/"
 
     # Get Workflow
     # 1. Run file

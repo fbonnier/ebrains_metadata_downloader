@@ -181,8 +181,8 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
             code["path"] = os.path.basename(icode).split(".")[0]
         
 
-        code["filepath"] = json_content["Metadata"]["workdir"] + "/code/" + code["filepath"]
-        code["path"] = json_content["Metadata"]["workdir"] + "/code/" + code["path"]
+        code["filepath"] = "code/" + code["filepath"]
+        code["path"] = "code/" + code["path"]
 
         json_content["Metadata"]["run"]["code"].append(code)
 

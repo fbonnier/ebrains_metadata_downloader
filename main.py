@@ -339,7 +339,7 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
     # # TODO Decision: What to do with no output expected ?
     # # ! Exception raised
     # try:
-    #     instance_outputs = []
+    instance_outputs = []
         
     #     for ioutput in outputs:
     #         output_from_ebrains_dataset = inputoutput.get_url_from_ebrains_dataset (ioutput, client)

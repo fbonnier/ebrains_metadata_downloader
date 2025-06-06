@@ -7,10 +7,10 @@ import warnings
 from fairgraph.openminds.core import DatasetVersion
 
 #------------------------------
-### Input/Ouput handling
+### Input/Ouput handling from URLs localy known
 #------------------------------
 
-file_default_value = {"url": None, "path": None, "filepath": None, "hash": None}
+file_default_value = {"url": None, "path": None, "filepath": None, "hash": None, "filename": None}
 
 # Get data from EBRAINS Dataset version
 def get_url_from_ebrains_dataset (dataset_id, client):
@@ -44,7 +44,7 @@ def get_from_url (dataset_url):
 def get_from_path (dataset_path):
     to_return = file_default_value
     
-    if os.path.exists(dataset_path):
+    if dataset_path and os.path.exists(dataset_path):
         # to_return["filepath"] = os.path.basename(dataset_path)
         # to_return["url"] = None
         print ("Dataset exists locally\n")
@@ -59,11 +59,11 @@ def get (dataset):
     to_return = file_default_value
 
     # Data is a file
-    to_return = get_from_path (dataset_path=dataset)
+    # to_return = get_from_path (dataset_path=dataset)
 
     # Data is URL link
-    if to_return is None:
-        to_return = get_from_url(dataset_url=dataset)
+    # if to_return is None:
+    to_return = get_from_url(dataset_url=dataset)
 
     return to_return
 

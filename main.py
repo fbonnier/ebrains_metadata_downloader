@@ -247,7 +247,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     
 
 
-def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=None, prerun=None, outputs=None):
+def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=None, prerun=None):
 
     client = None
     MCclient = None
@@ -335,33 +335,33 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))
 
-    # Get Outputs
-    # TODO Decision: What to do with no output expected ?
-    # ! Exception raised
-    try:
-        instance_outputs = []
+    # # Get Outputs
+    # # TODO Decision: What to do with no output expected ?
+    # # ! Exception raised
+    # try:
+    #     instance_outputs = []
         
-        for ioutput in outputs:
-            output_from_ebrains_dataset = inputoutput.get_url_from_ebrains_dataset (ioutput, client)
+    #     for ioutput in outputs:
+    #         output_from_ebrains_dataset = inputoutput.get_url_from_ebrains_dataset (ioutput, client)
 
-            if not output_from_ebrains_dataset:
-                instance_outputs.append(ioutput)
-            else:
-                instance_outputs.append(output_from_ebrains_dataset)
+    #         if not output_from_ebrains_dataset:
+    #             instance_outputs.append(ioutput)
+    #         else:
+    #             instance_outputs.append(output_from_ebrains_dataset)
         
-        # if outputs:
-        #     instance_outputs = outputs
-        # else:
-        #     instance_outputs = model_version.output_data
-        # Check if outputs are EBRAINS datasets
-        # TODO check if outputs are file objet/file bundle objects/ Web object
+    #     # if outputs:
+    #     #     instance_outputs = outputs
+    #     # else:
+    #     #     instance_outputs = model_version.output_data
+    #     # Check if outputs are EBRAINS datasets
+    #     # TODO check if outputs are file objet/file bundle objects/ Web object
 
-        if not instance_outputs:
-            warnings.warn("No output data to compare for this Instance ... Continue")
+    #     if not instance_outputs:
+    #         warnings.warn("No output data to compare for this Instance ... Continue")
         
-    except Exception as e:
-        print (str("".join(traceback.format_exception(e))))
-        exit (1)
+    # except Exception as e:
+    #     print (str("".join(traceback.format_exception(e))))
+    #     exit (1)
 
 
     # Get Pre-Run instructions, to prepare simulation run

@@ -39,7 +39,7 @@ file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
-    "workdir": "./", # str, path of the working directory
+    "workdir": "", # str, path of the working directory
     "workflow": {
         "run": {
             "url": None, # URL of the workflow instruction file to download
@@ -181,8 +181,8 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
             code["path"] = os.path.basename(icode).split(".")[0]
         
 
-        code["filepath"] = json_content["Metadata"]["workdir"] + "/code/" + code["filepath"]
-        code["path"] = json_content["Metadata"]["workdir"] + "/code/" + code["path"]
+        code["filepath"] = json_content["Metadata"]["workdir"] + "code/" + code["filepath"]
+        code["path"] = json_content["Metadata"]["workdir"] + "code/" + code["path"]
 
         json_content["Metadata"]["run"]["code"].append(code)
 
@@ -213,7 +213,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
         output_from_cli = inputoutput.get (ioutput)
 
         if output_from_cli:
-            output_from_cli["path"] =  str(json_content["Metadata"]["workdir"]) + "/outputs/"
+            output_from_cli["path"] =  str(json_content["Metadata"]["workdir"]) + "outputs/"
             output_from_cli["filepath"] =  output_from_cli["path"] + output_from_cli["filepath"] if output_from_cli["url"] else str(json_content["Metadata"]["workdir"]) + output_from_cli["filepath"]
             output_from_cli["filename"] =  os.path.basename(output_from_cli["filepath"])
             json_content["Metadata"]["run"]["outputs"].append(output_from_cli)

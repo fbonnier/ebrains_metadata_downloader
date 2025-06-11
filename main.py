@@ -39,7 +39,7 @@ file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
-    "workdir": os.getenv("WORKDIR", os.getcwd()), # str, path of the working directory
+    "workdir": os.getenv("WORKDIR", os.getcwd() + "/"), # str, path of the working directory
     "workflow": {
         "run": {
             "url": None, # URL of the workflow instruction file to download

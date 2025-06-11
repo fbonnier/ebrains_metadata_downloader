@@ -385,11 +385,11 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         json_content = build_json_file (id=id, workflow={}, workdir="", repos=instance_repo, inputs = instance_inputs, outputs=instance_outputs,prerun=instance_prerun, runscript=instance_run, environment={}, homepage=instance_homepage, paper=instance_paper, documentation=instance_documentation)
 
         # os.makedirs(os.path.dirname(json_content["Metadata"]["workdir"] + "/metadata-report.json"), exist_ok=True)
-        with open(str("metadata-report.json"), "w") as f:
+        with open(str("metadata-report.json"), "w+") as f:
             json.dump(json_content, f, indent=4)
 
-        if "metadata-report.json" in os.listdir(json_content["Metadata"]["workdir"]):
-            print ("Metadata report File created successfully")
+        # if "metadata-report.json" in os.listdir(json_content["Metadata"]["workdir"]):
+        print ("Metadata report File created successfully")
 
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))

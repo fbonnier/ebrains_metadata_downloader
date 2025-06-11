@@ -39,7 +39,7 @@ file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
-    "workdir": os.getcwd(), # str, path of the working directory
+    "workdir": os.getenv("WORKDIR", os.getcwd()), # str, path of the working directory
     "workflow": {
         "run": {
             "url": None, # URL of the workflow instruction file to download
@@ -132,7 +132,7 @@ def build_json_file (id:str , workdir:str, workflow, repos, inputs, outputs, pre
     # Get Workdir
     json_content["Metadata"]["workdir"] = workdir if workdir else report_default_values["workdir"]
     # json_content["Metadata"]["workdir"] = os.path.abspath( json_content["Metadata"]["workdir"] ) + "/"
-    json_content["Metadata"]["workdir"] = os.getenv("WORKDIR", "")
+    # json_content["Metadata"]["workdir"] = os.getenv("WORKDIR", os.getcwd())
 
     # Get Workflow
     # 1. Run file

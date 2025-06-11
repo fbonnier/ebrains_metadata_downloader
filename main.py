@@ -39,7 +39,7 @@ file_default_value = {"url": None, "path": None, "filepath": None}
 
 report_default_values = {
     "id": None, # str, ID of the model
-    "workdir": "", # str, path of the working directory
+    "workdir": os.getcwd(), # str, path of the working directory
     "workflow": {
         "run": {
             "url": None, # URL of the workflow instruction file to download
@@ -388,8 +388,8 @@ def get_cwl_json_kg3 (username=None, password=None, token=None, id=None, run=Non
         with open(str("metadata-report.json"), "w+") as f:
             json.dump(json_content, f, indent=4)
 
-        # if "metadata-report.json" in os.listdir(json_content["Metadata"]["workdir"]):
-        print ("Metadata report File created successfully")
+        if "metadata-report.json" in os.listdir():
+            print ("Metadata report File created successfully")
 
     except Exception as e:
         print (str("".join(traceback.format_exception(e))))

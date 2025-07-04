@@ -23,11 +23,10 @@ from ebrains_validation_framework import ModelCatalog
 
 from deepdiff import DeepDiff
 
-import modeldb_repo as modeldb
-import github_repo as github
-import zenodo_repo as zenodo
-
-import input_output as inputoutput
+from . import  modeldb_repo as modeldb
+from . import  github_repo as github
+from . import  zenodo_repo as zenodo
+from . import  input_output as inputoutput
 
 # Source server from which the ALREADY KG-v3 instances are downloaded
 # Default is Official KG-v3 server
